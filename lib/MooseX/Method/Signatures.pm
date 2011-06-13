@@ -366,6 +366,19 @@ __PACKAGE__->meta->make_immutable;
         }
     }
 
+    method say ($self_or_class: Str $string) {
+        say $string;
+    }
+
+    method k9 (ClassName $class: Bool $good_dog) {
+        if ($good_dog) {
+            $class->say( "AFFIRMATIVE, MISTRESS" );
+        }
+        else {
+            $class->say( "NEGATIVE, MISTRESS" );
+        }
+    }
+
     $foo->morning('Resi');                          # This works.
 
     $foo->hello(who => 'world', age => 42);         # This too.
@@ -379,6 +392,11 @@ __PACKAGE__->meta->make_immutable;
     $foo->morning;                                  # Won't work.
 
     $foo->greet;                                    # Will fail.
+
+    $foo->say("Hello");                             # called as class or object
+    Foo->say("Hello");
+
+    Foo->k9(1);                                     # only as class method
 
 =head1 DESCRIPTION
 
@@ -418,8 +436,14 @@ signature syntax is supported yet and some of it never will be.
 =head2 Invocant
 
     method foo (        $moo) # invocant is called $self and is required
-    method bar ($self:  $moo) # same, but explicit
-    method baz ($class: $moo) # invocant is called $class
+                              # it must also be an Object
+
+    method bar ($self:            $moo) # same, but explicit
+    method baz ($class:           $moo) # invocant is called $class
+    method qux (ClassName $class: $moo) # ... and must be a class name
+
+Note that if you don't specify an invocant, then it must be an object.
+This means that for class methods, you I<must> specify the invocant.
 
 =head2 Labels
 
